@@ -43,14 +43,4 @@ namespace KHAS {
     {
         assert(table_width >= min_table_width_);
     }
-
-    void CommonInterface::loop()
-    {
-        for (; !(GetAsyncKeyState(VK_ESCAPE) & 0x01);) {
-
-            showHeader();
-
-            std::cin.get();
-        }
-    }
 }

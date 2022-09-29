@@ -1,9 +1,6 @@
 #include "Interface.h"
 #include <Windows.h>
 #include <iostream>
-#include <iomanip>
-#include <thread>
-#include <chrono>
 
 namespace KHAS {
 

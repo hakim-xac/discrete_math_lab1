@@ -50,7 +50,7 @@ namespace KHAS {
     public: // public section
 
         CommonInterface() = delete;
-        virtual ~CommonInterface();
+        virtual ~CommonInterface() {};
 
         //* params */
         // first:   size_t          table_width_    | not default
