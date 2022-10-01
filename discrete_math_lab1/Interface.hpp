@@ -35,18 +35,62 @@ namespace KHAS {
     template <typename TContainer, typename TPower>
     void Interface::inputElemsSet(TContainer& con, TPower&& pow) {
 
-        using PowerType = std::decay_t<TPower>;
         using value_type = typename TContainer::value_type;
 
         auto power{ std::forward<TPower>(pow) };
 
         while(con.size() != power) {
 
+            push(delimiter('-'));
             push(stringGeneration(' ', "¬ведите элемент множества:"));
             push(delimiter('-'));
             flush();
             auto [elem, is_elem] { dataInput<value_type>(ActionWithInputValue::LoopIsError) };    
             if (con.find(elem) == con.end())   con.emplace(elem);
         }
+    }
+
+
+    template <typename Type, typename TPower>
+    void Interface::pairsInput(std::vector<std::pair<Type, Type>>& base, TPower&& pow, std::pair<Type, Type> min_max_elems) {
+
+        using value_type = Type;
+
+        auto power{ std::forward<TPower>(pow) };
+
+        push(delimiter('='));
+        push(stringGeneration(' ', "¬вод пар:"));
+        push(delimiter('-'));
+        flush();
+        bool replay{};
+        size_t count{ 1 };
+        while (base.size() != power) {
+            push(stringGeneration(' ', "ѕара номер: "+std::to_string(count)));
+            if (replay) {
+                push(delimiter('-'));
+                push(stringGeneration(' ', "ќшибка ввода пары! ¬ведите заново!"));
+            }
+            push(delimiter('-'));
+            push(stringGeneration(' ', "¬ведите 1 элемент пары:"));
+            push(delimiter('-'));
+            flush();
+            auto [first, is_first] { dataInput<value_type>(ActionWithInputValue::LoopIsError) };
+            push(delimiter('-'));
+            push(stringGeneration(' ', "¬ведите 2 элемент пары:"));
+            push(delimiter('-'));
+            flush();
+            auto [second, is_second] { dataInput<value_type>(ActionWithInputValue::LoopIsError) };
+            if (isClamp(first, min_max_elems.first, min_max_elems.second)
+                && isClamp(second, min_max_elems.first, min_max_elems.second)) {
+                base.emplace_back(std::make_pair(first, second));
+                replay = false;
+                ++count;
+            }
+            else {
+                replay = true;
+            }
+        }
+
+        
     }
 }

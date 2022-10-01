@@ -5,6 +5,7 @@
 #include <sstream>
 
 namespace KHAS {
+
     class Interface final : public CommonInterface
     {
     private:
@@ -23,6 +24,9 @@ namespace KHAS {
 
         template <typename TContainer, typename TPower>
         void inputElemsSet(TContainer& con, TPower&& pow);
+
+        template <typename Type, typename TPower>
+        void pairsInput(std::vector<std::pair<Type, Type>>& base, TPower&& pow, std::pair<Type, Type> min_max_elems);
     };
 
 }
