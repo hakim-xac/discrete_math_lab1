@@ -17,6 +17,12 @@ namespace KHAS {
         // second:  std::ostream&   out_            | default: std::cout
         Interface(std::size_t table_width, std::ostream& out = std::cout)
             : CommonInterface(table_width, out) {};
+
+        template<typename Type>
+        Type inputPowerSet();
+
+        template <typename TContainer, typename TPower>
+        void inputElemsSet(TContainer& con, TPower&& pow);
     };
 
 }

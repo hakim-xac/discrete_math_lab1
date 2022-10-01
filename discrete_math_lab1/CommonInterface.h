@@ -20,7 +20,15 @@ namespace KHAS {
         const std::size_t table_width_;
         const std::size_t min_table_width_{ 100 };
 
-    private:    // section for member functions
+
+    protected:   
+
+        enum class ActionWithInputValue {
+            LoopIsError
+            , ErrorReturn
+        };
+
+    protected:
 
         //* reset to output */
         void flush();
@@ -31,7 +39,10 @@ namespace KHAS {
         //* creates a string of length table_width_ and */
         std::string delimiter(char del) const;
 
-    private:    // section for templates 
+        //* prints the header to a stream */
+        void showHeader();
+
+
 
         //* forwards a string "str" to a temporary buffer "out_buffer_" */
         template <typename TString>
@@ -41,11 +52,21 @@ namespace KHAS {
         template <typename ... TString>
         std::string stringGeneration(char aggregate = ' ', TString&& ... str);
 
-    protected:
+        //*  */
+        template <typename TInput>
+        std::pair<TInput, bool> dataInput(ActionWithInputValue awiv = ActionWithInputValue::ErrorReturn) const noexcept;
 
-        //* prints the header to a stream */
-        void showHeader();
+        //*  */
+        template <typename TValue, typename TLower, typename THight>
+        constexpr auto clamp(TValue&& v, TLower&& lo, THight&& hi);
 
+        //*  */
+        template <typename TValue, typename TLower, typename THight, typename Compare>
+        constexpr auto clamp(TValue&& v, TLower&& lo, THight&& hi, Compare comp);
+
+        //*  */
+        template <typename TValue, typename TLower, typename THight>
+        constexpr bool isClamp(TValue&& v, TLower&& lo, THight&& hi) const;
 
     public: // public section
 

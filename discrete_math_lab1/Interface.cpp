@@ -1,17 +1,24 @@
 #include "Interface.h"
-#include <Windows.h>
+#include <set>
 #include <iostream>
+#include <algorithm>
+#include <iterator>
 
 namespace KHAS {
 
     void Interface::loop()
     {
-        for (; !(GetAsyncKeyState(VK_ESCAPE) & 0x01);) {
+        using Type = int;
 
-            showHeader();
+        system("cls");
+        showHeader();
+        auto power{ inputPowerSet<Type>() };
+        std::set<Type> base;
 
-            std::cin.get();
-        }
-        
+        inputElemsSet(base, power);
+
+
+        //* Debug output */
+        std::copy(base.begin(), base.end(), std::ostream_iterator<Type>(std::cout, " "));
     }
 }
