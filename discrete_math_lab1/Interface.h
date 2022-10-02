@@ -2,6 +2,7 @@
 
 #include "CommonInterface.h"
 #include <iostream>
+#include <unordered_set>
 #include <sstream>
 
 namespace KHAS {
@@ -25,8 +26,13 @@ namespace KHAS {
         template <typename TContainer, typename TPower>
         void inputElemsSet(TContainer& con, TPower&& pow);
 
-        template <typename Type, typename TPower>
-        void pairsInput(std::vector<std::pair<Type, Type>>& base, TPower&& pow, std::pair<Type, Type> min_max_elems);
+        template <typename ValueType>
+        using PairType = std::pair<ValueType, ValueType>;
+
+        template <typename ValueType
+            , template <typename, typename, typename, typename> class BaseType>
+        void pairsInput(const BaseType<ValueType, std::hash<ValueType>, std::equal_to<ValueType>, std::allocator<ValueType>>& base
+            , std::vector<std::pair<ValueType, ValueType>>& pairs);
     };
 
 }

@@ -60,21 +60,24 @@ namespace KHAS {
     }
 
 
-    template <typename Type, typename TPower>
-    inline void Interface::pairsInput(std::vector<std::pair<Type, Type>>& base, TPower&& pow, std::pair<Type, Type> min_max_elems) {
+    template <typename ValueType
+        , template <typename, typename, typename, typename> class BaseType>
+    void Interface::pairsInput(const BaseType<ValueType, std::hash<ValueType>, std::equal_to<ValueType>, std::allocator<ValueType>>& base
+        , std::vector<std::pair<ValueType, ValueType>>& pairs) {
 
-        using value_type = Type;
+        using value_type = ValueType;
 
-        auto power{ std::forward<TPower>(pow) };
 
         push(delimiter('='));
         push(stringGeneration(' ', "¬вод пар:"));
         push(delimiter('-'));
         flush();
+
+        auto size{ base.size() }; 
         bool replay{};
         size_t count{ 1 };
-        while (base.size() != power) {
-            push(stringGeneration(' ', "ѕара номер: "+std::to_string(count)));
+        while (pairs.size() != size) {
+            push(stringGeneration(' ', "ѕара номер: " + std::to_string(count)));
             if (replay) {
                 push(delimiter('-'));
                 push(stringGeneration(' ', "ќшибка ввода пары! ¬ведите заново!"));
@@ -89,15 +92,13 @@ namespace KHAS {
             push(delimiter('-'));
             flush();
             auto [second, is_second] { dataInput<value_type>(ActionWithInputValue::LoopIsError) };
-            if (isClamp(first, min_max_elems.first, min_max_elems.second)
-                && isClamp(second, min_max_elems.first, min_max_elems.second)) {
-                base.emplace_back(std::make_pair(first, second));
+            
+            if (base.contains(first) && base.contains(second)) {
+                pairs.emplace_back(std::make_pair(first, second));
                 replay = false;
                 ++count;
             }
-            else replay = true;            
-        }
-
-        
+            else replay = true;
+        }     
     }
 }
