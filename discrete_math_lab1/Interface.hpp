@@ -3,7 +3,7 @@
 namespace KHAS {
 
     template <typename Type>
-    Type Interface::inputPowerSet()
+    inline Type Interface::inputPowerSet()
     {
         using InputType = Type;
 
@@ -33,26 +33,35 @@ namespace KHAS {
 
 
     template <typename TContainer, typename TPower>
-    void Interface::inputElemsSet(TContainer& con, TPower&& pow) {
+    inline void Interface::inputElemsSet(TContainer& con, TPower&& pow) {
 
         using value_type = typename TContainer::value_type;
 
         auto power{ std::forward<TPower>(pow) };
-
+        auto count{ power };
+        bool replay{};
         while(con.size() != power) {
-
+            if (replay) {
+                push(delimiter('-'));
+                push(stringGeneration(' ', "Данное число уже есть во множестве!", "Повторите ввод!"));
+            }
             push(delimiter('-'));
-            push(stringGeneration(' ', "Введите элемент множества:"));
+            push(stringGeneration(' ', "Введите элемент множества:", "ещё " + std::to_string(count)));
             push(delimiter('-'));
             flush();
             auto [elem, is_elem] { dataInput<value_type>(ActionWithInputValue::LoopIsError) };    
-            if (con.find(elem) == con.end())   con.emplace(elem);
+            if (con.find(elem) == con.end()) {
+                con.emplace(elem);
+                --count;
+                replay = false;
+            }
+            else replay = true;
         }
     }
 
 
     template <typename Type, typename TPower>
-    void Interface::pairsInput(std::vector<std::pair<Type, Type>>& base, TPower&& pow, std::pair<Type, Type> min_max_elems) {
+    inline void Interface::pairsInput(std::vector<std::pair<Type, Type>>& base, TPower&& pow, std::pair<Type, Type> min_max_elems) {
 
         using value_type = Type;
 
@@ -86,9 +95,7 @@ namespace KHAS {
                 replay = false;
                 ++count;
             }
-            else {
-                replay = true;
-            }
+            else replay = true;            
         }
 
         
