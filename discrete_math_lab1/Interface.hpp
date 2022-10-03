@@ -1,5 +1,9 @@
 #pragma once
 
+#include <sstream>
+#include <iomanip>
+#include "Interface.h"
+
 namespace KHAS {
 
     template <typename Type>
@@ -33,7 +37,8 @@ namespace KHAS {
 
 
     template <typename TContainer, typename TPower>
-    inline void Interface::inputElemsSet(TContainer& con, TPower&& pow) {
+    inline void Interface::inputElemsSet(TContainer& con, TPower&& pow) 
+    {
 
         using value_type = typename TContainer::value_type;
 
@@ -63,7 +68,8 @@ namespace KHAS {
     template <typename ValueType
         , template <typename, typename, typename, typename> class BaseType>
     void Interface::pairsInput(const BaseType<ValueType, std::hash<ValueType>, std::equal_to<ValueType>, std::allocator<ValueType>>& base
-        , std::vector<std::pair<ValueType, ValueType>>& pairs) {
+        , std::vector<std::pair<ValueType, ValueType>>& pairs) 
+    {
 
         using value_type = ValueType;
 
@@ -100,5 +106,52 @@ namespace KHAS {
             }
             else replay = true;
         }     
+    }
+
+    template <typename ValueType>
+    void Interface::printMatrix(const std::vector<std::pair<ValueType, ValueType>>& pairs) 
+    {
+        using value_type = std::decay_t<ValueType>;
+
+        size_t size{ pairs.size() };
+        size_t double_size{ size * size };
+        std::vector <value_type> base(double_size);
+
+        for (const auto& [col, row] : pairs) {
+
+            auto pos{ row * size + col - size - 1 };
+            assert(pos >= 0 && pos < double_size);
+            if(!base[pos]) base[pos] = 1;
+        }
+        printToBuffer(base, size);
+
+    }
+
+
+    template<typename ValueType>
+    inline void Interface::printToBuffer(const std::vector<ValueType>& base, size_t col_size)
+    {
+        std::stringstream ss;
+
+        push(delimiter('='));
+        push(stringGeneration(' ', "Вывод матрицы"));
+        push(delimiter('-'));
+
+        for (size_t i{}, ie{ col_size }; i != ie; ++i) ss << std::setw(4) << "|" << std::setw(4) << "#" << i+1;
+        push(stringGeneration(' ', ss.str()));
+        ss.str("");
+        for (size_t i{}, ie{ col_size }; i != ie; ++i) ss << std::setw(4) << "-" << std::setw(4) << "-" << "-";
+        push(stringGeneration(' ', ss.str()));
+        ss.str("");
+
+        for (size_t i{}, ie{ base.size() }; i != ie; ++i) {
+            ss << std::setw(4) << "|" << std::setw(4) << base[i] << " ";
+            if ((i + 1) % col_size == 0) {
+                push(stringGeneration(' ', ss.str()));
+                ss.str("");
+            }
+        }
+        flush();
+
     }
 }

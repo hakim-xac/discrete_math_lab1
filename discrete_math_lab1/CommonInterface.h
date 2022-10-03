@@ -50,7 +50,7 @@ namespace KHAS {
 
         //* generates a string of length table_width_ from the given arguments */
         template <typename ... TString>
-        std::string stringGeneration(char aggregate = ' ', TString&& ... str);
+        std::string stringGeneration(char aggregate, TString&& ... rest_str);
 
         //*  */
         template <typename TInput>

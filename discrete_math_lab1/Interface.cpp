@@ -21,16 +21,9 @@ namespace KHAS {
 
 
         std::vector<std::pair<Type, Type>> pairs;
-        pairs.reserve(power);
-        
+        pairs.reserve(power);        
         pairsInput<Type>(base, pairs);
 
-        //* Debug output */
-        std::copy(base.begin(), base.end(), std::ostream_iterator<Type>(std::cout, " "));
-        std::cout << "\n\n";
-        //* Debug output */
-        for (auto&& [a, b] : pairs) {
-            std::cout << a << " " << b << "\n";
-        }
+        printMatrix(pairs);
     }
 }

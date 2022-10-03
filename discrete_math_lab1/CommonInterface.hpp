@@ -19,7 +19,7 @@ namespace KHAS {
     inline std::string CommonInterface::stringGeneration(char aggregate, TString&& ... str)
     {
         static_assert(sizeof...(str) > 0);
-        std::initializer_list forward_str{  std::string(std::forward<TString>(str))... };
+        std::initializer_list forward_str{ std::string(std::forward<TString>(str))... };
 
         std::size_t length_forward_str{ std::accumulate(
             forward_str.begin()
@@ -33,7 +33,7 @@ namespace KHAS {
 
         const std::size_t numerator{ table_width_ - length_forward_str };
         const std::size_t denominator{ sizeof...(str) + 1 };
-        const std::size_t delimiter_size{  numerator / denominator + 1 };
+        const std::size_t delimiter_size{ numerator / denominator + 1 };
         auto tmp{ std::string(delimiter_size, aggregate) };
 
         std::string result{ std::accumulate(
