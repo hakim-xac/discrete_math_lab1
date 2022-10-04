@@ -45,22 +45,44 @@ namespace KHAS {
         auto power{ std::forward<TPower>(pow) };
         auto count{ power };
         bool replay{};
+        value_type idx{ 1 };
         while(con.size() != power) {
             if (replay) {
                 push(delimiter('-'));
                 push(stringGeneration(' ', "Данное число уже есть во множестве!", "Повторите ввод!"));
             }
             push(delimiter('-'));
-            push(stringGeneration(' ', "Введите элемент множества:", "ещё " + std::to_string(count)));
+            push(stringGeneration(' ', "Введите элемент множества:", "ещё " + std::to_string(power - idx + 1)));
             push(delimiter('-'));
             flush();
-            auto [elem, is_elem] { dataInput<value_type>(ActionWithInputValue::LoopIsError) };    
-            if (con.find(elem) == con.end()) {
-                con.emplace(elem);
-                --count;
-                replay = false;
+            auto [elem, is_elem] { dataInput<value_type>(ActionWithInputValue::LoopIsError) };  
+            bool is_not_clamp{ !isClamp(elem, 1, power) };
+            bool is_unordered_index{ idx != elem };
+
+            if (is_not_clamp) {
+                push(delimiter('-'));
+                push(stringGeneration(' ', "Введеный элемент не должен превышать мощность множества и быть меньше 1 !"));
+                push(delimiter('-'));
+                flush();
+                continue;
             }
-            else replay = true;
+            else if (is_unordered_index) {
+                push(delimiter('-'));
+                push(stringGeneration(' ', "Ввод данных не соответствует условию!"));
+                push(delimiter('-'));
+                flush();
+                continue;
+            }
+            ++idx;
+            replay = true;    
+            if (con.find(elem) == con.end()) {                
+                if (auto mx{ std::max_element(std::begin(con), std::end(con)) };
+                    con.size() == 0 || (mx != std::end(con) &&  *mx < elem)) {
+                    con.emplace(elem);
+                    --count;
+                    replay = false;
+                }
+            }
         }
     }
 

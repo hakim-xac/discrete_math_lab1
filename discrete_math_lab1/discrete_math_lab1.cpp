@@ -4,7 +4,7 @@
 
 
 int main()
-{
+ {
     using namespace KHAS;
     setlocale(LC_ALL, "Russian");
     //* params */
@@ -13,5 +13,5 @@ int main()
     Interface window(100);
     window.loop();
 
-
+     
 }

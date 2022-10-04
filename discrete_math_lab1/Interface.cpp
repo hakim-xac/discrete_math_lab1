@@ -15,6 +15,7 @@ namespace KHAS {
         showHeader();
 
         auto power{ inputPowerSet<Type>() };
+
         std::unordered_set<Type> base;
         base.reserve(power);
         inputElemsSet(base, power);
