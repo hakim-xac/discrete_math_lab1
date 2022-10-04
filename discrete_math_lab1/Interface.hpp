@@ -45,6 +45,7 @@ namespace KHAS {
         auto power{ std::forward<TPower>(pow) };
         auto count{ power };
         bool replay{};
+
         while(con.size() != power) {
             if (replay) {
                 push(delimiter('-'));
@@ -54,13 +55,23 @@ namespace KHAS {
             push(stringGeneration(' ', "¬ведите элемент множества:", "ещЄ " + std::to_string(count)));
             push(delimiter('-'));
             flush();
-            auto [elem, is_elem] { dataInput<value_type>(ActionWithInputValue::LoopIsError) };    
-            if (con.find(elem) == con.end()) {
-                con.emplace(elem);
-                --count;
-                replay = false;
+            auto [elem, is_elem] { dataInput<value_type>(ActionWithInputValue::LoopIsError) };   
+            if (!isClamp(elem, 0, power)) {
+                push(delimiter('-'));
+                push(stringGeneration(' ', "¬веденый элемент не должен превышать мощность множества!"));
+                push(delimiter('-'));
+                flush();
+                continue;
             }
-            else replay = true;
+            replay = true;    
+            if (con.find(elem) == con.end()) {                
+                if (auto mx{ std::max_element(std::begin(con), std::end(con)) };
+                    con.size() == 0 || (mx != std::end(con) &&  *mx < elem)) {
+                    con.emplace(elem);
+                    --count;
+                    replay = false;
+                }
+            }
         }
     }
 
