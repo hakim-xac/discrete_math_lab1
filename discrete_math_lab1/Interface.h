@@ -29,11 +29,44 @@ namespace KHAS {
         void pairsInput(const BaseType<ValueType, std::hash<ValueType>, std::equal_to<ValueType>, std::allocator<ValueType>>& base
             , std::vector<std::pair<ValueType, ValueType>>& pairs);
 
-        template <typename ValueType>
-        void printMatrix(const std::vector<std::pair<ValueType, ValueType>>& pairs);
+        template <typename TContainer>
+        void printMatrix(const TContainer& base_container, size_t lenght_col);
 
-        template <typename ValueType>
-        void printToBuffer(const std::vector<ValueType>& base, size_t col_size);
+        template <typename TContainer, typename TPairContainer>
+        void applyPairs(TContainer& base_container, const TPairContainer& pair_container, size_t lenght_col);
+
+        template <typename TVecContainer, typename TPairContainer>
+        void printProperties(const TVecContainer& vec_conteiner, const TPairContainer& pair_container, size_t lenght_col);
+
+        template <typename TVecContainer>
+        void printIsReflexive(const TVecContainer& vec_conteiner, size_t lenght_col);
+
+        template <typename TVecContainer>
+        void printIsAntiReflexive(const TVecContainer& vec_conteiner, size_t lenght_col);
+
+        template <typename TVecContainer>
+        void printIsSymmetry(const TVecContainer& vec_conteiner, size_t lenght_col);
+
+        template <typename TVecContainer>
+        void printIsAntiSymmetry(const TVecContainer& vec_conteiner, size_t lenght_col);
+
+        template <typename TVecContainer, typename TPairContainer>
+        void printIsTransitivity(const TVecContainer& vec_conteiner, const TPairContainer& pair_conteiner, size_t lenght_col);
+
+        template <typename TVecContainer>
+        bool isReflexive(const TVecContainer& vec_conteiner, size_t lenght_col);
+
+        template <typename TVecContainer>
+        bool isAntiReflexive(const TVecContainer& vec_conteiner, size_t lenght_col);
+
+        template <typename TVecContainer>
+        bool isSymmetry(const TVecContainer& vec_conteiner, size_t lenght_col);
+
+        template <typename TVecContainer>
+        bool isAntiSymmetry(const TVecContainer& vec_conteiner, size_t lenght_col);
+
+        template <typename TVecContainer, typename TPairContainer>
+        bool isTransitivity(const TVecContainer& vec_conteiner, const TPairContainer& pair_conteiner, size_t lenght_col);
 
 
     public:

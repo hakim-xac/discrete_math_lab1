@@ -69,6 +69,7 @@ namespace KHAS {
             else if (is_unordered_index) {
                 push(delimiter('-'));
                 push(stringGeneration(' ', "Ввод данных не соответствует условию!"));
+                push(stringGeneration(' ', "[ Ожидается "+std::to_string(idx) + " ]" ));
                 push(delimiter('-'));
                 flush();
                 continue;
@@ -100,16 +101,11 @@ namespace KHAS {
         push(stringGeneration(' ', "Ввод пар:"));
         push(delimiter('-'));
         flush();
+        auto double_size{ base.size() * base.size() };
 
-        auto size{ base.size() }; 
-        bool replay{};
         size_t count{ 1 };
-        while (pairs.size() != size) {
+        while (pairs.size() != double_size) {
             push(stringGeneration(' ', "Пара номер: " + std::to_string(count)));
-            if (replay) {
-                push(delimiter('-'));
-                push(stringGeneration(' ', "Ошибка ввода пары! Введите заново!"));
-            }
             push(delimiter('-'));
             push(stringGeneration(' ', "Введите 1 элемент пары:"));
             push(delimiter('-'));
@@ -121,59 +117,168 @@ namespace KHAS {
             flush();
             auto [second, is_second] { dataInput<value_type>(ActionWithInputValue::LoopIsError) };
             
-            if (base.contains(first) && base.contains(second)) {
-                pairs.emplace_back(std::make_pair(first, second));
-                replay = false;
-                ++count;
+            if (!base.contains(first) || !base.contains(second)) {
+                push(delimiter('-'));
+                push(stringGeneration(' ', "Ошибка ввода пары! Введите заново!"));
+                push(delimiter('-'));
+                continue;
             }
-            else replay = true;
+
+            pairs.emplace_back(std::make_pair(first, second));
+            ++count;  
+
+            if (pairs.size() + 1 != double_size) {
+                push(delimiter('-'));
+                push(stringGeneration(' ', "Продолжить?", "0 - Нет", "1 - Да"));
+                flush();
+                auto [answer, is_answer] { dataInput<value_type>(ActionWithInputValue::ErrorReturn) };
+                if (!is_answer || answer != 1) break;
+            }
         }     
     }
 
-    template <typename ValueType>
-    void Interface::printMatrix(const std::vector<std::pair<ValueType, ValueType>>& pairs) 
+    template <typename TContainer>
+    void Interface::printMatrix(const TContainer& base_container, size_t lenght_col)
     {
-        using value_type = std::decay_t<ValueType>;
+        using value_type = TContainer;
 
-        size_t size{ pairs.size() };
-        size_t double_size{ size * size };
-        std::vector <value_type> base(double_size);
-
-        for (const auto& [col, row] : pairs) {
-
-            auto pos{ row * size + col - size - 1 };
-            assert(pos >= 0 && pos < double_size);
-            if(!base[pos]) base[pos] = 1;
-        }
-        printToBuffer(base, size);
-
-    }
-
-
-    template<typename ValueType>
-    inline void Interface::printToBuffer(const std::vector<ValueType>& base, size_t col_size)
-    {
         std::stringstream ss;
 
         push(delimiter('='));
         push(stringGeneration(' ', "Вывод матрицы"));
         push(delimiter('-'));
 
-        for (size_t i{}, ie{ col_size }; i != ie; ++i) ss << std::setw(4) << "|" << std::setw(4) << "#" << i+1;
+        for (size_t i{}, ie{ lenght_col }; i != ie; ++i) ss << std::setw(4) << "|" << std::setw(4) << "#" << i + 1;
         push(stringGeneration(' ', ss.str()));
         ss.str("");
-        for (size_t i{}, ie{ col_size }; i != ie; ++i) ss << std::setw(4) << "-" << std::setw(4) << "-" << "-";
+        for (size_t i{}, ie{ lenght_col }; i != ie; ++i) ss << std::setw(4) << "-" << std::setw(4) << "-" << "-";
         push(stringGeneration(' ', ss.str()));
         ss.str("");
 
-        for (size_t i{}, ie{ base.size() }; i != ie; ++i) {
-            ss << std::setw(4) << "|" << std::setw(4) << base[i] << " ";
-            if ((i + 1) % col_size == 0) {
+        for (size_t i{}, ie{ base_container.size() }; i != ie; ++i) {
+            ss << std::setw(4) << "|" << std::setw(4) << base_container[i] << " ";
+            if ((i + 1) % lenght_col == 0) {
                 push(stringGeneration(' ', ss.str()));
                 ss.str("");
             }
         }
         flush();
 
+    }
+
+    template <typename TContainer, typename TPairContainer>
+    void Interface::applyPairs(TContainer& base_container, const TPairContainer& pair_container, size_t lenght_col) {
+
+        for (auto&& pair : pair_container) {
+            auto row{ pair.first - 1 };
+            auto col{ pair.second - 1 };
+
+            auto pos{ row * lenght_col + col };
+            assert(base_container.size() > pos);
+            base_container[pos] = 1;
+        }
+    }
+
+
+    template <typename TVecContainer, typename TPairContainer>
+    void Interface::printProperties(const TVecContainer& vec_conteiner, const TPairContainer& pair_conteiner, size_t lenght_col) {
+
+        push(delimiter('='));
+        push(stringGeneration(' ', "Свойства"));
+        push(delimiter('-'));
+        printIsReflexive       (vec_conteiner, lenght_col);
+        printIsAntiReflexive   (vec_conteiner, lenght_col);
+        printIsSymmetry        (vec_conteiner, lenght_col);
+        printIsAntiSymmetry    (vec_conteiner, lenght_col);
+        printIsTransitivity    (vec_conteiner, pair_conteiner, lenght_col);
+
+        flush();
+    }
+
+    template <typename TVecContainer>
+    void Interface::printIsReflexive(const TVecContainer& vec_conteiner, size_t lenght_col) {
+        
+        push(stringGeneration(' ', "Рефлексивность:", (isReflexive(vec_conteiner, lenght_col) ? "Рефлексивно" : "НЕ Рефлексивно")));
+        push(delimiter('-'));
+    }
+
+    template <typename TVecContainer>
+    void Interface::printIsAntiReflexive(const TVecContainer& vec_conteiner, size_t lenght_col) {
+
+        push(stringGeneration(' ', "Антирефлексивность:", (isAntiReflexive(vec_conteiner, lenght_col) ? "Антирефлексивно" : "НЕ Антирефлексивно")));
+        push(delimiter('-'));
+    }
+
+    template <typename TVecContainer>
+    void Interface::printIsSymmetry(const TVecContainer& vec_conteiner, size_t lenght_col) {
+
+        push(stringGeneration(' ', "Симметричность:", (isSymmetry(vec_conteiner, lenght_col) ? "Симметрично" : "НЕ Симметрично")));
+        push(delimiter('-'));
+    }
+
+    template <typename TVecContainer>
+    void Interface::printIsAntiSymmetry(const TVecContainer& vec_conteiner, size_t lenght_col) {
+
+        push(stringGeneration(' ', "Антисимметричность:", (isAntiSymmetry(vec_conteiner, lenght_col) ? "Антисимметрично" : "НЕ Антисимметрично")));
+        push(delimiter('-'));
+    }
+
+    template <typename TVecContainer, typename TPairContainer>
+    void Interface::printIsTransitivity(const TVecContainer& vec_conteiner, const TPairContainer& pair_conteiner, size_t lenght_col) {
+
+        push(stringGeneration(' ', "Транзитивность:", (isTransitivity(vec_conteiner, pair_conteiner, lenght_col) ? "Транзитивно" : "НЕ Транзитивно")));
+        push(delimiter('-'));
+    }
+
+    template <typename TVecContainer>
+    bool Interface::isReflexive(const TVecContainer& vec_conteiner, size_t lenght_col) {
+        
+        for (size_t ie{}, ite{ vec_conteiner.size() }; ie < ite; ie += (lenght_col + 1))
+            if (!vec_conteiner[ie]) return false;
+        return true;
+    }
+
+    template <typename TVecContainer>
+    bool Interface::isAntiReflexive(const TVecContainer& vec_conteiner, size_t lenght_col) {
+
+        for (size_t it{}, ite{ vec_conteiner.size() }; it < ite; it += (lenght_col + 1))
+            if (vec_conteiner[it]) return false;
+        return true;
+    }
+
+    template <typename TVecContainer>
+    bool Interface::isSymmetry(const TVecContainer& vec_conteiner, size_t lenght_col) {
+
+    for (size_t it{ 1 }, ite{ (vec_conteiner.size() >> 1) - 1 }; it < ite; ++it) {
+            auto left{ lenght_col * it + it - 1 };
+            auto right{ (it - 1) * lenght_col + it };
+            
+            if (vec_conteiner[left] != vec_conteiner[right]) return false;
+        }
+        return true;
+    }
+
+    template <typename TVecContainer>
+    bool Interface::isAntiSymmetry(const TVecContainer& vec_conteiner, size_t lenght_col) {
+
+        return !isSymmetry(vec_conteiner, lenght_col);
+    }
+
+    template <typename TVecContainer, typename TPairContainer>
+    bool Interface::isTransitivity(const TVecContainer& vec_conteiner, const TPairContainer& pair_conteiner, size_t lenght_col) {
+
+        for (const auto& elem : pair_conteiner) {
+
+            auto fnd{ std::find_if(std::begin(pair_conteiner)
+                , std::end(pair_conteiner)
+                , [&elem, &vec_conteiner, &lenght_col](const auto& pair ) {
+
+                auto pos { (elem.first - 1) * lenght_col + pair.second - 1 };
+                return elem.second == pair.first && vec_conteiner[pos] == 1;
+
+                }) };
+            if (fnd == pair_conteiner.end()) return false;
+        }
+        return true;
     }
 }

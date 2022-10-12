@@ -1,0 +1,24 @@
+5	count elems in set
+1	elem set
+2	elem set
+3	elem set
+4	elem set
+5	elem set
+1	first pair one elem
+1	second pair one elem
+2	first pair one elem
+2	second pair one elem
+3	first pair one elem
+3	second pair one elem
+2	first pair one elem
+4	second pair one elem
+1	first pair one elem
+5	second pair one elem
+
+	Expected Result
+/*			*/
+1	0	0	0	1
+0	1	0	1	0
+0	0	1	0	0
+0	0	0	0	0
+0	0	0	0	0
