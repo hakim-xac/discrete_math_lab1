@@ -6,31 +6,56 @@
 #include <iterator>
 
 namespace KHAS {
-
+    void Interface::addingAPairToASet()
+    {
+        std::cout << "add\n";
+    }
+    void Interface::deletingAPairFromASet()
+    {
+        std::cout << "delete\n";
+    }
     void Interface::loop()
     {
-        using Type = int;
+        auto activeCommand{ Commands::None };
 
-        system("cls");
-        showHeader();
+        while (activeCommand != Commands::Exit) {
+            system("cls");
+            printHeader();
 
-        auto power{ inputPowerSet<Type>() };
+            switch (activeCommand)
+            {
+            case KHAS::Commands::AddingAPair:
+                break;
+            case KHAS::Commands::DeletingAPair:
+                break;
+            case KHAS::Commands::RemovingAPair:
+                break;
+            case KHAS::Commands::Exit:
+                break;
+            case KHAS::Commands::Unknown:
+                printUnknown();
+                break;
+            case KHAS::Commands::None:
+            case KHAS::Commands::SetNewSET:
+                base_set_.clear();
+                base_vec_.clear();
+                pairs_.clear();
 
-        std::unordered_set<Type> base_set;
-        base_set.reserve(power);
-        inputElemsSet(base_set, power);
+                auto power{ inputPowerSet<Type>() };
+                base_set_.reserve(power);
+                pairs_.reserve(power * power);
+                base_vec_.resize(power * power, Type{});
+                inputElemsSet(power);
+                pairsInput<Type>();
+                applyPairs(power);
+                printMatrix(power);
+                printProperties(power);
+                break;
+            }            
 
-        std::vector<std::pair<Type, Type>> pairs;
-        pairs.reserve(power*power); 
+            printMenu();
 
-        pairsInput<Type>(base_set, pairs);
-        pairs.shrink_to_fit();
-
-        std::vector<Type> base_vec(power * power, Type{});
-        applyPairs(base_vec, pairs, power);
-
-        printMatrix(base_vec, power);
-
-        printProperties(base_vec, pairs, power);
+            activeCommand = selectCommand();
+        }
     }
 }

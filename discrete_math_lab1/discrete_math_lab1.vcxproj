@@ -138,6 +138,7 @@
   <ItemGroup>
     <ClInclude Include="CommonInterface.h" />
     <ClInclude Include="CommonInterface.hpp" />
+    <ClInclude Include="Enums.h" />
     <ClInclude Include="Interface.h" />
     <ClInclude Include="Interface.hpp" />
   </ItemGroup>

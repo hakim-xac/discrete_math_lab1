@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <sstream>
+#include "Enums.h"
 
 
 namespace KHAS {
@@ -21,13 +22,6 @@ namespace KHAS {
         const std::size_t min_table_width_{ 100 };
 
 
-    protected:   
-
-        enum class ActionWithInputValue {
-            LoopIsError
-            , ErrorReturn
-        };
-
     protected:
 
         //* reset to output */
@@ -40,9 +34,19 @@ namespace KHAS {
         std::string delimiter(char del) const;
 
         //* prints the header to a stream */
-        void showHeader();
+        void printHeader();
 
+        //* prints the menu to a stream */
+        void printMenu();
 
+        //*  */
+        Commands selectCommand();
+
+        //*  */
+        void runCommands(Commands cmd);
+
+        //*  */
+        void printUnknown();
 
         //* forwards a string "str" to a temporary buffer "out_buffer_" */
         template <typename TString>
@@ -67,6 +71,9 @@ namespace KHAS {
         //*  */
         template <typename TValue, typename TLower, typename THight>
         constexpr bool isClamp(TValue&& v, TLower&& lo, THight&& hi) const;
+
+
+
 
     public: // public section
 

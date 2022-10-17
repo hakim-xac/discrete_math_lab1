@@ -82,7 +82,6 @@ namespace KHAS {
         return { tmp, true };        
     }
 
-
     template <typename TValue, typename TLower, typename THight>
     inline constexpr auto CommonInterface::clamp(TValue&& v, TLower&& lo, THight&& hi) {
         return clamp(std::forward<TValue>(v), std::forward<TLower>(lo), std::forward<THight>(hi), std::less{});
@@ -96,12 +95,13 @@ namespace KHAS {
         return comp(value, lower) ? lower : comp(hight, value) ? hight : value;
     }
 
-
     template <typename TValue, typename TLower, typename THight>
     inline constexpr bool CommonInterface::isClamp(TValue&& v, TLower&& lo, THight&& hi) const {
         auto value{ std::forward<TValue>(v) };
         auto lower{ std::forward<TLower>(lo) };
         auto hight{ std::forward<THight>(hi) };
         return value >= lower && value <= hight;
-    }
+    }    
+    
+    
 }

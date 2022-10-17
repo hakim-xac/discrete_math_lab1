@@ -9,64 +9,70 @@ namespace KHAS {
 
     class Interface final : public CommonInterface
     {
+        using Type = size_t;
+        std::unordered_set<Type> base_set_;
+        std::vector<std::pair<Type, Type>> pairs_;
+        std::vector<Type> base_vec_;
 
     private:
 
+        void addingAPairToASet();
+        void deletingAPairFromASet();
 
     private:
 
         template<typename Type>
         Type inputPowerSet();
 
-        template <typename TContainer, typename TPower>
-        void inputElemsSet(TContainer& con, TPower&& pow);
+        template <typename TPower>
+        void inputElemsSet(TPower&& pow);
 
         template <typename ValueType>
         using PairType = std::pair<ValueType, ValueType>;
 
-        template <typename ValueType
-            , template <typename, typename, typename, typename> class BaseType>
-        void pairsInput(const BaseType<ValueType, std::hash<ValueType>, std::equal_to<ValueType>, std::allocator<ValueType>>& base
-            , std::vector<std::pair<ValueType, ValueType>>& pairs);
+        template <typename ValueType>
+        void pairsInput();
 
-        template <typename TContainer>
-        void printMatrix(const TContainer& base_container, size_t lenght_col);
+        template <typename TType>
+        void printMatrix(TType lenght_col);
 
-        template <typename TContainer, typename TPairContainer>
-        void applyPairs(TContainer& base_container, const TPairContainer& pair_container, size_t lenght_col);
+        template <typename TType>
+        void applyPairs(TType lenght_col);
 
-        template <typename TVecContainer, typename TPairContainer>
-        void printProperties(const TVecContainer& vec_conteiner, const TPairContainer& pair_container, size_t lenght_col);
+        template <typename TType>
+        void printProperties(TType lenght_col);
 
-        template <typename TVecContainer>
-        void printIsReflexive(const TVecContainer& vec_conteiner, size_t lenght_col);
+        template <typename TType>
+        void printIsReflexive(TType lenght_col);
 
-        template <typename TVecContainer>
-        void printIsAntiReflexive(const TVecContainer& vec_conteiner, size_t lenght_col);
+        template <typename TType>
+        void printIsAntiReflexive(TType lenght_col);
 
-        template <typename TVecContainer>
-        void printIsSymmetry(const TVecContainer& vec_conteiner, size_t lenght_col);
+        template <typename TType>
+        void printIsSymmetry(TType lenght_col);
 
-        template <typename TVecContainer>
-        void printIsAntiSymmetry(const TVecContainer& vec_conteiner, size_t lenght_col);
+        template <typename TType>
+        void printIsAntiSymmetry(TType lenght_col);
 
-        template <typename TVecContainer, typename TPairContainer>
-        void printIsTransitivity(const TVecContainer& vec_conteiner, const TPairContainer& pair_conteiner, size_t lenght_col);
+        template <typename TType>
+        void printIsTransitivity(TType lenght_col);
 
-        template <typename TVecContainer>
-        bool isReflexive(const TVecContainer& vec_conteiner, size_t lenght_col);
+        template <typename TType>
+        bool isReflexive(TType lenght_col);
 
-        template <typename TVecContainer>
-        bool isAntiReflexive(const TVecContainer& vec_conteiner, size_t lenght_col);
+        template <typename TType>
+        bool isAntiReflexive(TType lenght_col);
 
-        template <typename TVecContainer>
-        bool isSymmetry(const TVecContainer& vec_conteiner, size_t lenght_col);
+        template <typename TType>
+        bool isSymmetry(TType lenght_col);
 
-        template <typename TVecContainer>
-        bool isAntiSymmetry(const TVecContainer& vec_conteiner, size_t lenght_col);
+        template <typename TType>
+        bool isAntiSymmetry(TType lenght_col);
 
-        template <typename TVecContainer, typename TPairContainer>
-        bool isTransitivity(const TVecContainer& vec_conteiner, const TPairContainer& pair_conteiner, size_t lenght_col);
+        template <typename TType>
+        bool isTransitivity(TType lenght_col);
+
+
 
 
     public:
@@ -76,7 +82,10 @@ namespace KHAS {
         // first:   size_t          table_width_    | not default
         // second:  std::ostream&   out_            | default: std::cout
         Interface(std::size_t table_width, std::ostream& out = std::cout)
-            : CommonInterface(table_width, out) {};
+            : CommonInterface(table_width, out)
+            , base_set_() 
+            , pairs_()
+            , base_vec_() {};
     };
 
 }

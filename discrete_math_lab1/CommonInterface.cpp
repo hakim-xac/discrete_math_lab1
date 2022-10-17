@@ -1,10 +1,11 @@
 #include "CommonInterface.h"
 #include <Windows.h>
 #include <cassert>
+#include <unordered_map>
 
 
 namespace KHAS {
-    void CommonInterface::showHeader()
+    void CommonInterface::printHeader()
     {
         push(delimiter('='));
         push(stringGeneration(' ', "Дисциплина:", "", "", "", "", "Дискретная математика"));
@@ -14,6 +15,73 @@ namespace KHAS {
         push(stringGeneration(' ', "Выполнил студент:", "", "", "", "", "Хакимов А.С."));
         push(delimiter('='));
 
+        flush();
+    }
+
+    void CommonInterface::printMenu()
+    {
+        push(delimiter('='));
+        push(stringGeneration(' ', "Клавиша", "", "", "", "Действие"));
+        push(delimiter('-'));
+        push(stringGeneration(' ', "[ 1 ]", "    ", "", "", "", "", "Добавить пару"));
+        push(stringGeneration(' ', "[ 2 ]", "    ", "", "", "", "", "Удалить пару"));
+        push(stringGeneration(' ', "[ 3 ]", "    ", "", "", "", "", "Изменить пару"));
+        push(stringGeneration(' ', "[ 5 ] ", "", "", "", "", "", "Задать новое множество"));
+        push(stringGeneration(' ', "[ 0 ]", "            ", "", "", "", "", "Выход"));
+        push(delimiter('='));
+
+        flush();
+    }
+
+    Commands CommonInterface::selectCommand()
+    {
+        int tmp_cmd{};
+        while (!(std::cin >> tmp_cmd)) {
+            push(delimiter('-'));
+            push(stringGeneration(' ', "Ошибка ввода! Повторите ввод!"));
+            push(delimiter('-'));
+            flush();
+            std::cin.clear();
+            auto mx = std::numeric_limits<std::streamsize>::max;
+            std::cin.ignore(mx(), '\n');
+        }
+        static std::unordered_map<int, Commands> base{
+            { 1, Commands::AddingAPair }
+            , { 2, Commands::DeletingAPair }
+            , { 3, Commands::RemovingAPair }
+            , { 5, Commands::SetNewSET }
+            , { 0, Commands::Exit }
+        };
+        if (base.find(tmp_cmd) == base.end()) return Commands::Unknown;
+
+        return base[tmp_cmd];
+    }
+
+    void CommonInterface::runCommands(Commands cmd)
+    {
+        switch (cmd) {
+        case Commands::AddingAPair:
+
+            break;
+        case Commands::DeletingAPair:
+
+            break;
+        case Commands::RemovingAPair:
+
+            break;
+        case Commands::SetNewSET:
+
+            break;
+        default:
+            break;
+        }
+    }
+
+    void CommonInterface::printUnknown()
+    {
+        push(delimiter('-'));
+        push(stringGeneration(' ', "Ошибка ввода! Повторите ввод!"));
+        push(delimiter('-'));
         flush();
     }
 
