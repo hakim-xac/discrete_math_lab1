@@ -6,56 +6,55 @@
 #include <iterator>
 
 namespace KHAS {
-    void Interface::addingAPairToASet()
-    {
-        std::cout << "add\n";
-    }
-    void Interface::deletingAPairFromASet()
-    {
-        std::cout << "delete\n";
-    }
+
+
     void Interface::loop()
     {
         auto activeCommand{ Commands::None };
+        system("cls");
+        printHeader();
+        auto power{ inputPowerSet<Type>() };
 
         while (activeCommand != Commands::Exit) {
-            system("cls");
-            printHeader();
 
             switch (activeCommand)
             {
             case KHAS::Commands::AddingAPair:
+            {
+                pairsInput<Type>();
+                applyPairs(power);
+                printMatrix(power);
+                printProperties(power);
+            }
                 break;
-            case KHAS::Commands::DeletingAPair:
-                break;
-            case KHAS::Commands::RemovingAPair:
-                break;
-            case KHAS::Commands::Exit:
-                break;
-            case KHAS::Commands::Unknown:
-                printUnknown();
-                break;
+            case KHAS::Commands::DeletingAPair:     deletingAPairFromASet(power); break;
+            case KHAS::Commands::RemovingAPair:     removingAPairFromASet(power); break;
+            case KHAS::Commands::Unknown:           printUnknown(); break;
+            case KHAS::Commands::SetNewSET:         power = inputPowerSet<Type>();
             case KHAS::Commands::None:
-            case KHAS::Commands::SetNewSET:
+            {
                 base_set_.clear();
                 base_vec_.clear();
                 pairs_.clear();
 
-                auto power{ inputPowerSet<Type>() };
                 base_set_.reserve(power);
                 pairs_.reserve(power * power);
                 base_vec_.resize(power * power, Type{});
                 inputElemsSet(power);
                 pairsInput<Type>();
-                applyPairs(power);
-                printMatrix(power);
-                printProperties(power);
+                applyPairs(power); 
+            }
                 break;
             }            
 
+            printMatrix(power);
+            printProperties(power);
             printMenu();
 
             activeCommand = selectCommand();
+
+            system("cls");
+            printHeader();
         }
     }
 }

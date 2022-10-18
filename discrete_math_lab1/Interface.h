@@ -16,13 +16,14 @@ namespace KHAS {
 
     private:
 
-        void addingAPairToASet();
-        void deletingAPairFromASet();
+        template<typename TType>
+        void deletingAPairFromASet(TType lenght_col);
 
-    private:
+        template<typename TType>
+        void removingAPairFromASet(TType lenght_col);
 
-        template<typename Type>
-        Type inputPowerSet();
+        template<typename TType>
+        TType inputPowerSet();
 
         template <typename TPower>
         void inputElemsSet(TPower&& pow);
